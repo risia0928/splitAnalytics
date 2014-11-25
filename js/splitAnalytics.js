@@ -28,10 +28,6 @@
 		this.type 			= this.elm.getAttribute("data-splytics-type") || "click";
 		this.class 			= "";
 	};
-	var Iterator =  function (splytics) {
-		this.splytics = splytics;
-		this.index = 0;
-	};
 	Splytics.prototype = {
 		getCookie : function(name) {
 			return Cookie.get(name);
@@ -44,8 +40,9 @@
 			if (cookie == null) {
 				this.class = this.classes[Math.floor(Math.random()*this.classes.length)];
 				this.setCookie(this.id, this.class, 30);
+			}else {
+				this.class = cookie;
 			}
-			this.class = cookie;
 			this.elm.className += " " + this.class;
 		},
 		addEvent : function() {
@@ -55,7 +52,7 @@
 			} , true);
 		},
 		sendPageView : function() {
-			this.sendEventTrack('view',this.title,this.class);
+			this.sendEventTrack('view',this.id,this.class);
 		},
 		sendEventTrack : function(type,title,value) {
 			ga('send', {
@@ -66,9 +63,10 @@
 			});
 		}
 	};
-	/*******************************
-	 * イテレーター
-	 ******************************/
+	var Iterator =  function (splytics) {
+		this.splytics = splytics;
+		this.index = 0;
+	};
 	Iterator.prototype = {
 		hasNext : function () {
 			return this.index < this.splytics.getLength();
@@ -77,9 +75,6 @@
 			return this.splytics.getAt(this.index++);
 		}
 	};
-	/*******************************
-	 * クッキー
-	 ******************************/
 	var Cookie = {
 		get: function(name) {
 			var nameEQ = name + "=";
